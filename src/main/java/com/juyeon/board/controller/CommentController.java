@@ -9,6 +9,8 @@ import com.juyeon.board.global.PostNotFoundException;
 import com.juyeon.board.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -75,5 +77,24 @@ public class CommentController {
         return ResponseEntity
                 .ok()
                 .body(new ResponseMsg(200, "댓글 단일 조회 성공", responseMap));
+    }
+
+    // 게시글 수정
+    @Operation(summary = "댓글 수정", description = "특정 댓글 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "203", description = "댓글 수정 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못 입력된 파라미터")
+    })
+    @PutMapping("/comments/{commentId}")
+    public ResponseEntity<?> editComment(@PathVariable long commentId, @RequestBody CommentDTO modifiedComment) throws PostNotFoundException {
+        commentService.updateComment(commentId, modifiedComment);
+
+        Map<String, Object> responseMap = new HashMap<>();
+        String msg = "댓글 수정에 성공하였습니다.";
+        responseMap.put("result", msg);
+
+        return ResponseEntity
+                .ok()
+                .body(new ResponseMsg(203, "댓글 수정 성공", responseMap));
     }
 }

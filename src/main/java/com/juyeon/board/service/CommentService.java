@@ -1,7 +1,9 @@
 package com.juyeon.board.service;
 
 import com.juyeon.board.domain.dto.CommentDTO;
+import com.juyeon.board.domain.dto.PostDTO;
 import com.juyeon.board.domain.entity.Comment;
+import com.juyeon.board.domain.entity.Post;
 import com.juyeon.board.global.CommentNotFoundException;
 import com.juyeon.board.repository.CommentRepository;
 import jakarta.transaction.Transactional;
@@ -34,5 +36,22 @@ public class CommentService {
                 .orElseThrow(() -> new CommentNotFoundException("존재하지 않는 댓글입니다."));
 
         return comment;
+    }
+
+    // 게시글 수정
+    @Transactional
+    public void updateComment(long commentId, CommentDTO commentDTO) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 댓글입니다."));
+
+        // 수정
+        Comment updatedComment = Comment.builder()
+                .commentId(comment.getCommentId())
+                .postId(commentDTO.getPostId() != null ? commentDTO.getPostId() : comment.getPostId())
+                .content(commentDTO.getContent() != null ? commentDTO.getContent() : comment.getContent())
+                .build();
+
+        // 저장
+        commentRepository.save(updatedComment);
     }
 }

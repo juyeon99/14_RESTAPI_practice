@@ -10,6 +10,6 @@ import lombok.*;
 @Builder
 public class CommentDTO {
     private long commentId;
-    private long postId;
+    private Long postId;
     private String content;
 }
