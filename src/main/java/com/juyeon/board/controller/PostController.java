@@ -70,7 +70,7 @@ public class PostController {
             })
     @GetMapping("/posts/{postId}")
     public ResponseEntity<ResponseMsg> findPostByPostId(@PathVariable long postId) throws PostNotFoundException {
-        PostDTO foundPost = postService.getPostByPostId(postId);
+        Post foundPost = postService.getPostByPostId(postId);
 
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("post", foundPost);

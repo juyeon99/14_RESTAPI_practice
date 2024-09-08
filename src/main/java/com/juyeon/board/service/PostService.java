@@ -32,22 +32,18 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public PostDTO getPostByPostId(long postId) throws PostNotFoundException {
+    public Post getPostByPostId(long postId) throws PostNotFoundException {
         Post post =  postRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException("값이 없어요~" + postId));
+                .orElseThrow(() -> new PostNotFoundException("존재하지 않는 게시글입니다."));
 
-        return PostDTO.builder()
-                .postId(post.getPostId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .build();
+        return post;
     }
 
     // 게시글 수정
     @Transactional
     public void updatePost(long postId, PostDTO postDTO) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("해당 id의 게시글을 찾을 수 없음"));
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글입니다."));
 
         // 수정
 //        modelMapper.map(postDTO, post);
