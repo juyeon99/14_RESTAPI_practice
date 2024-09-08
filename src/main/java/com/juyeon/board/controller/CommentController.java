@@ -2,9 +2,13 @@ package com.juyeon.board.controller;
 
 import com.juyeon.board.common.ResponseMsg;
 import com.juyeon.board.domain.dto.CommentDTO;
+import com.juyeon.board.domain.dto.PostDTO;
 import com.juyeon.board.domain.entity.Comment;
+import com.juyeon.board.global.CommentNotFoundException;
+import com.juyeon.board.global.PostNotFoundException;
 import com.juyeon.board.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +52,28 @@ public class CommentController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseMsg(200, "모든 댓글 조회 성공", responseMap));
+                .body(new ResponseMsg(200, "댓글 전체 조회 성공", responseMap));
+    }
+
+    // 댓글 단일 조회
+    @Operation(
+            summary = "댓글 번호로 특정 게시글 조회",
+            description = "댓글 번호를 통해 특정 게시글을 조회한다.",
+            parameters = {
+                    @Parameter(
+                            name = "commentId",
+                            description = "comment의 pk"
+                    )
+            })
+    @GetMapping("/comments/{commentId}")
+    public ResponseEntity<ResponseMsg> findCommentByCommentId(@PathVariable long commentId) throws CommentNotFoundException {
+        Comment foundComment = commentService.getCommentByCommentId(commentId);
+
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("comment", foundComment);
+
+        return ResponseEntity
+                .ok()
+                .body(new ResponseMsg(200, "댓글 단일 조회 성공", responseMap));
     }
 }

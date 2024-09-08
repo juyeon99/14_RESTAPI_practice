@@ -2,6 +2,7 @@ package com.juyeon.board.service;
 
 import com.juyeon.board.domain.dto.CommentDTO;
 import com.juyeon.board.domain.entity.Comment;
+import com.juyeon.board.global.CommentNotFoundException;
 import com.juyeon.board.repository.CommentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,4 +29,10 @@ public class CommentService {
         return commentRepository.findAll();
     }
 
+    public Comment getCommentByCommentId(long commentId) throws CommentNotFoundException {
+        Comment comment =  commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException("존재하지 않는 댓글입니다."));
+
+        return comment;
+    }
 }
