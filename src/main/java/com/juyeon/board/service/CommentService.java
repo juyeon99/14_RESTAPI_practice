@@ -1,9 +1,7 @@
 package com.juyeon.board.service;
 
 import com.juyeon.board.domain.dto.CommentDTO;
-import com.juyeon.board.domain.dto.PostDTO;
 import com.juyeon.board.domain.entity.Comment;
-import com.juyeon.board.domain.entity.Post;
 import com.juyeon.board.global.CommentNotFoundException;
 import com.juyeon.board.repository.CommentRepository;
 import jakarta.transaction.Transactional;
@@ -38,7 +36,6 @@ public class CommentService {
         return comment;
     }
 
-    // 게시글 수정
     @Transactional
     public void updateComment(long commentId, CommentDTO commentDTO) {
         Comment comment = commentRepository.findById(commentId)
@@ -53,5 +50,18 @@ public class CommentService {
 
         // 저장
         commentRepository.save(updatedComment);
+    }
+
+    public boolean deleteComment(long commentId) {
+        try {
+            if (commentRepository.existsById(commentId)) {
+                commentRepository.deleteById(commentId);
+                return true; // 댓글 삭제 성공
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

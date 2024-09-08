@@ -2,7 +2,6 @@ package com.juyeon.board.controller;
 
 import com.juyeon.board.common.ResponseMsg;
 import com.juyeon.board.domain.dto.CommentDTO;
-import com.juyeon.board.domain.dto.PostDTO;
 import com.juyeon.board.domain.entity.Comment;
 import com.juyeon.board.global.CommentNotFoundException;
 import com.juyeon.board.global.PostNotFoundException;
@@ -79,7 +78,7 @@ public class CommentController {
                 .body(new ResponseMsg(200, "댓글 단일 조회 성공", responseMap));
     }
 
-    // 게시글 수정
+    // 댓글 수정
     @Operation(summary = "댓글 수정", description = "특정 댓글 수정")
     @ApiResponses({
             @ApiResponse(responseCode = "203", description = "댓글 수정 성공"),
@@ -96,5 +95,28 @@ public class CommentController {
         return ResponseEntity
                 .ok()
                 .body(new ResponseMsg(203, "댓글 수정 성공", responseMap));
+    }
+
+    // 댓글 삭제
+    @Operation(summary = "댓글 삭제", description = "특정 댓글 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "댓글 삭제 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못 입력된 파라미터")
+    })
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable long commentId) throws CommentNotFoundException {
+        Map<String, Object> responseMap = new HashMap<>();
+
+        boolean isDeleted = commentService.deleteComment(commentId);
+        if (isDeleted) {
+            String msg = "댓글 삭제에 성공하였습니다.";
+            responseMap.put("result", msg);
+        } else {
+            throw new CommentNotFoundException("댓글 삭제에 실패하였습니다.");
+        }
+
+        return ResponseEntity
+                .ok()
+                .body(new ResponseMsg(204, "댓글 삭제 성공", responseMap));
     }
 }
