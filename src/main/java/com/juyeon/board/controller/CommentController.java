@@ -2,17 +2,16 @@ package com.juyeon.board.controller;
 
 import com.juyeon.board.common.ResponseMsg;
 import com.juyeon.board.domain.dto.CommentDTO;
+import com.juyeon.board.domain.entity.Comment;
 import com.juyeon.board.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Tag(name = "Spring Boot Swagger 연동 API (Comments)")
@@ -22,8 +21,8 @@ import java.util.Map;
 public class CommentController {
     private final CommentService commentService;
 
-    // 게시글 작성
-    @Operation(summary = "게시글 작성", description = "게시판에 업로드할 새로운 게시글 작성")
+    // 댓글 작성
+    @Operation(summary = "댓글 작성", description = "게시글에 추가할 새로운 댓글 작성")
     @PostMapping("/comments")
     public ResponseEntity<ResponseMsg> createNewPost(@RequestBody CommentDTO newComment) {
         commentService.registerComment(newComment);
@@ -36,5 +35,19 @@ public class CommentController {
         return ResponseEntity
                 .ok()
                 .body(new ResponseMsg(201, "댓글 추가 성공", responseMap));
+    }
+
+    // 댓글 전체 조회
+    @Operation(summary = "댓글 전체 조회", description = "사이트의 댓글 전체 조회")
+    @GetMapping("/comments")
+    public ResponseEntity<ResponseMsg> findAllComments() {
+        List<Comment> comments = commentService.findAllComments();
+
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("comments", comments);
+
+        return ResponseEntity
+                .ok()
+                .body(new ResponseMsg(200, "모든 댓글 조회 성공", responseMap));
     }
 }
